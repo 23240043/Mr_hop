@@ -1,12 +1,9 @@
 <?php
-/**
- * Conexión a base de datos - Patrón Singleton con PDO
- */
+
 class Database {
     private static $instance = null;
     private $connection;
 
-    // Datos de conexión - AJUSTAR según tu entorno
     private $host = 'localhost';
     private $db_name = 'bar_restaurante';
     private $username = 'root';

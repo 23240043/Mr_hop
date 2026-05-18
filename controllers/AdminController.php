@@ -23,8 +23,6 @@ class AdminController extends Controller {
         $this->view('admin/dashboard', $datos);
     }
 
-    // ============ CRUD USUARIOS ============
-
     public function usuarios() {
         Auth::requireRole('administrador');
         $usuarioModel = new Usuario();
@@ -140,5 +138,78 @@ class AdminController extends Controller {
             Helper::setFlash('error', 'No se pudo desactivar.');
         }
         Helper::redirect('index.php?controller=admin&action=usuarios');
+    }
+
+    public function backupDB() {
+
+    Auth::requireRole('administrador');
+
+    
+    $host = "localhost";
+    $usuario = "root";
+    $password = "";
+    $database = "bar_restaurante";
+
+    
+    $fecha = date("Y-m-d_H-i-s");  
+    $nombreArchivo = "backup_" . $fecha . ".sql";
+    $rutaBackup = ROOT_PATH . "/backups/" . $nombreArchivo;
+    $mysqldump = "C:\\laragon\\bin\\mysql\\mysql-8.0.30-winx64\\bin\\mysqldump.exe";
+
+    $comando = "\"$mysqldump\" --user=$usuario --password=$password --host=$host $database > \"$rutaBackup\"";
+
+    system($comando, $resultado);
+
+    if ($resultado === 0 && file_exists($rutaBackup)) {
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($rutaBackup) . '"');
+        header('Content-Length: ' . filesize($rutaBackup));
+        readfile($rutaBackup);
+        exit;
+    } else {
+
+        Helper::setFlash('error', 'No se pudo generar el respaldo.');
+        Helper::redirect('index.php?controller=admin&action=dashboard');
+    }
+
+    }
+    public function vistaRestoreDB() {
+
+    Auth::requireRole('administrador');
+    $datos = [
+        'titulo' => 'Restaurar Base de Datos'
+    ];
+
+    $this->view('admin/restaurar_bd', $datos);
+    }
+    public function restoreDB() {
+
+    Auth::requireRole('administrador');
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!isset($_FILES['backup']) || $_FILES['backup']['error'] !== 0) {
+            Helper::setFlash('error', 'Error al subir el archivo.');
+            Helper::redirect('index.php?controller=admin&action=vistaRestoreDB');
+        }
+
+        $fileTmp = $_FILES['backup']['tmp_name'];
+
+        $host = "localhost";
+        $usuario = "root";
+        $password = "";
+        $database = "bar_restaurante";
+
+        $mysql = "C:\laragon\bin\mysql\mysql-8.0.30-winx64\bin\mysql.exe";
+        $comando = "\"$mysql\" --host=$host --user=$usuario --password=$password $database < \"$fileTmp\"";
+        system($comando, $resultado);
+
+        if ($resultado === 0) {
+            Helper::setFlash('success', 'Base de datos restaurada correctamente.');
+            Helper::redirect('index.php?controller=admin&action=dashboard');
+        } else {
+            Helper::setFlash('error', 'Error al restaurar la base de datos.');
+            Helper::redirect('index.php?controller=admin&action=vistaRestoreDB');
+        }
+    }
     }
 }

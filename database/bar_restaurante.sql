@@ -1,14 +1,8 @@
--- =====================================================
--- BASE DE DATOS: bar_restaurante
--- Sistema MVC para Bar Restaurante
--- =====================================================
 
 CREATE DATABASE IF NOT EXISTS bar_restaurante CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE bar_restaurante;
 
--- =====================================================
--- TABLA: roles
--- =====================================================
+
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE,
@@ -21,9 +15,7 @@ INSERT INTO roles (nombre, descripcion) VALUES
 ('mesero', 'Personal de servicio en mesa'),
 ('barra', 'Personal de preparación en barra/cocina');
 
--- =====================================================
--- TABLA: usuarios
--- =====================================================
+
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -38,9 +30,7 @@ CREATE TABLE usuarios (
     FOREIGN KEY (rol_id) REFERENCES roles(id)
 );
 
--- =====================================================
--- TABLA: categorias (Bebida, Comida, Combo)
--- =====================================================
+
 CREATE TABLE categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
@@ -58,9 +48,7 @@ INSERT INTO categorias (nombre, tipo, descripcion) VALUES
 ('Postres', 'comida', 'Dulces y postres'),
 ('Combos Especiales', 'combo', 'Combos para compartir');
 
--- =====================================================
--- TABLA: productos (carta: bebidas, comidas, combos)
--- =====================================================
+
 CREATE TABLE productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
@@ -94,9 +82,7 @@ INSERT INTO productos (nombre, descripcion, precio, categoria_id, imagen) VALUES
 ('Combo Botanero', '4 cervezas + nachos + alitas', 380.00, 8, 'default.jpg'),
 ('Combo Familiar', '2 hamburguesas + 2 refrescos + papas', 420.00, 8, 'default.jpg');
 
--- =====================================================
--- TABLA: mesas
--- =====================================================
+
 CREATE TABLE mesas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     numero INT NOT NULL UNIQUE,
@@ -114,9 +100,7 @@ INSERT INTO mesas (numero, capacidad, ubicacion) VALUES
 (5, 6, 'Salón principal'),
 (6, 8, 'Área VIP');
 
--- =====================================================
--- TABLA: pedidos
--- =====================================================
+
 CREATE TABLE pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -132,9 +116,7 @@ CREATE TABLE pedidos (
     FOREIGN KEY (mesa_id) REFERENCES mesas(id)
 );
 
--- =====================================================
--- TABLA: detalle_pedidos
--- =====================================================
+
 CREATE TABLE detalle_pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     pedido_id INT NOT NULL,
@@ -146,9 +128,7 @@ CREATE TABLE detalle_pedidos (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
--- =====================================================
--- TABLA: resenas (reseñas de clientes)
--- =====================================================
+
 CREATE TABLE resenas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -159,9 +139,7 @@ CREATE TABLE resenas (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
--- =====================================================
--- TABLA: ambiente (galería de imágenes del lugar)
--- =====================================================
+
 CREATE TABLE ambiente (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(150) NOT NULL,
@@ -177,9 +155,7 @@ INSERT INTO ambiente (titulo, descripcion, imagen, orden) VALUES
 ('Barra', 'Una barra completa con los mejores destilados nacionales e internacionales.', 'default.jpg', 3),
 ('Área VIP', 'Espacio reservado para eventos privados y celebraciones especiales.', 'default.jpg', 4);
 
--- =====================================================
--- TABLA: tokens_recuperacion (para recuperación de contraseña - futuro)
--- =====================================================
+
 CREATE TABLE tokens_recuperacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -190,10 +166,7 @@ CREATE TABLE tokens_recuperacion (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- =====================================================
--- USUARIOS DE PRUEBA (password en texto plano para básico: "12345")
--- En producción se usará password_hash() de PHP
--- =====================================================
+
 -- Contraseña para todos: 12345 (hash de password_hash con PASSWORD_DEFAULT)
 INSERT INTO usuarios (nombre, apellidos, email, password, telefono, rol_id) VALUES
 ('Admin', 'Principal', 'admin@bar.com', '$2y$10$YourHashHere1234567890abcdefghijklmnopqrstuvwxyz', '5555555555', 1),
@@ -201,12 +174,10 @@ INSERT INTO usuarios (nombre, apellidos, email, password, telefono, rol_id) VALU
 ('Carlos', 'Mesero López', 'mesero@bar.com', '$2y$10$YourHashHere1234567890abcdefghijklmnopqrstuvwxyz', '5544556677', 3),
 ('Pedro', 'Barra Ruiz', 'barra@bar.com', '$2y$10$YourHashHere1234567890abcdefghijklmnopqrstuvwxyz', '5566778899', 4);
 
--- NOTA: Después de instalar, ejecuta el archivo /database/seed_passwords.php
--- para generar los hashes correctos de las contraseñas de prueba.
 
--- =====================================================
--- RESEÑAS DE EJEMPLO
--- =====================================================
+
+RESEÑAS DE EJEMPLO
+
 INSERT INTO resenas (usuario_id, calificacion, comentario) VALUES
 (2, 5, '¡Excelente lugar! La comida estuvo deliciosa y el servicio fue muy atento. Volveré pronto.'),
 (2, 4, 'Muy buen ambiente, los cócteles son los mejores de la zona. Recomendado.');

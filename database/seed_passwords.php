@@ -1,17 +1,10 @@
 <?php
-/**
- * Script para generar los hashes de las contraseñas de los usuarios de prueba.
- * Ejecutar UNA VEZ después de importar bar_restaurante.sql
- * 
- * USO: Abre en navegador -> http://localhost/mr_hop/database/seed_passwords.php
- *      O por consola: php database/seed_passwords.php
- */
 
 require_once __DIR__ . '/../config/database.php';
 
 $db = Database::getInstance()->getConnection();
 
-// Contraseña común para todos los usuarios de prueba
+
 $password = '12345';
 $hash = password_hash($password, PASSWORD_DEFAULT);
 

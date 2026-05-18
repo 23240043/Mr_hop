@@ -66,6 +66,24 @@
             <p class="card-text">Moderar reseñas</p>
         </div>
     </a>
+
+    <!-- BOTÓN DE RESPALDO -->
+    <a href="<?= Helper::url('admin', 'backupDB') ?>" class="card" style="text-decoration: none;">
+        <div class="card-body text-center" style="padding: 30px;">
+            <div style="font-size: 3rem;">💾</div>
+            <h3 class="card-title">Respaldo</h3>
+            <p class="card-text">Generar copia de seguridad</p>
+        </div>
+    </a>
+
+    <a href="<?= Helper::url('admin', 'vistaRestoreDB') ?>" class="card" style="text-decoration: none;">
+    <div class="card-body text-center" style="padding: 30px;">
+        <div style="font-size: 3rem;">♻️</div>
+        <h3 class="card-title">Restaurar BD</h3>
+        <p class="card-text">Subir respaldo SQL</p>
+    </div>
+</a>
+
 </div>
 
 <!-- PEDIDOS RECIENTES -->

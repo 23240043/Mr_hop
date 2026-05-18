@@ -10,7 +10,6 @@ class BarraController extends Controller {
         
         $datos = [
             'titulo' => 'Panel de barra/cocina',
-            // Pedidos por preparar
             'pedidos_pendientes' => $pedidoModel->listarPorEstado('pendiente'),
             'pedidos_en_preparacion' => $pedidoModel->listarPorEstado(['en_preparacion','emplatado']),
         ];

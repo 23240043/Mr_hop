@@ -5,9 +5,7 @@ require_once ROOT_PATH . '/models/Producto.php';
 
 class PedidoController extends Controller {
 
-    /**
-     * Pantalla para crear pedido (cliente)
-     */
+
     public function nuevo() {
         Auth::requireLogin();
         $productoModel = new Producto();
@@ -23,9 +21,6 @@ class PedidoController extends Controller {
         $this->view('pedidos/nuevo', $datos);
     }
 
-    /**
-     * Procesar formulario de creación
-     */
     public function guardar() {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -39,7 +34,6 @@ class PedidoController extends Controller {
         $productos = $_POST['producto_id'] ?? [];
         $cantidades = $_POST['cantidad'] ?? [];
 
-        // Validaciones básicas
         if ($tipo === 'mesa' && !$mesa_id) {
             Helper::setFlash('error', 'Selecciona una mesa.');
             Helper::redirect('index.php?controller=pedido&action=nuevo');
@@ -49,7 +43,6 @@ class PedidoController extends Controller {
             Helper::redirect('index.php?controller=pedido&action=nuevo');
         }
 
-        // Construir items
         $productoModel = new Producto();
         $items = [];
         foreach ($productos as $i => $prod_id) {
@@ -71,7 +64,6 @@ class PedidoController extends Controller {
             Helper::redirect('index.php?controller=pedido&action=nuevo');
         }
 
-        // Guardar
         $pedidoModel = new Pedido();
         try {
             $pedido_id = $pedidoModel->crearConDetalle([
@@ -90,9 +82,6 @@ class PedidoController extends Controller {
         }
     }
 
-    /**
-     * Ver un pedido y su progreso
-     */
     public function ver() {
         Auth::requireLogin();
         $id = intval($_GET['id'] ?? 0);
@@ -104,7 +93,6 @@ class PedidoController extends Controller {
             Helper::redirect('');
         }
 
-        // Solo dueño, admin, mesero o barra pueden verlo
         $usuario = Auth::user();
         if ($pedido['usuario_id'] != $usuario['id'] && !Auth::hasRole(['administrador','mesero','barra'])) {
             Helper::setFlash('error', 'No tienes permiso para ver este pedido.');
@@ -119,9 +107,6 @@ class PedidoController extends Controller {
         $this->view('pedidos/ver', $datos);
     }
 
-    /**
-     * Listar pedidos del cliente actual (mis pedidos)
-     */
     public function misPedidos() {
         Auth::requireLogin();
         $pedidoModel = new Pedido();
@@ -132,9 +117,6 @@ class PedidoController extends Controller {
         $this->view('pedidos/mis_pedidos', $datos);
     }
 
-    /**
-     * Listar TODOS los pedidos (admin)
-     */
     public function listar() {
         Auth::requireRole(['administrador','mesero']);
         $pedidoModel = new Pedido();
@@ -145,9 +127,6 @@ class PedidoController extends Controller {
         $this->view('pedidos/listar', $datos);
     }
 
-    /**
-     * Actualizar estado (usado por mesero/barra/admin)
-     */
     public function actualizarEstado() {
         Auth::requireRole(['administrador','mesero','barra']);
         $id = intval($_POST['id'] ?? $_GET['id'] ?? 0);
@@ -166,7 +145,6 @@ class PedidoController extends Controller {
             Helper::setFlash('error', 'No se pudo actualizar el estado.');
         }
 
-        // Redirigir según rol
         $rol = Auth::user()['rol'];
         if ($rol === 'mesero') Helper::redirect('index.php?controller=mesero&action=dashboard');
         elseif ($rol === 'barra') Helper::redirect('index.php?controller=barra&action=dashboard');

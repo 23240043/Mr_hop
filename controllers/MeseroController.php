@@ -10,9 +10,9 @@ class MeseroController extends Controller {
         
         $datos = [
             'titulo' => 'Panel del mesero',
-            // Pedidos listos para entregar
+            
             'pedidos_listos' => $pedidoModel->listarPorEstado('listo'),
-            // Pedidos en proceso (para tener contexto)
+            
             'pedidos_proceso' => $pedidoModel->listarPorEstado(['pendiente','en_preparacion','emplatado']),
         ];
         $this->view('mesero/dashboard', $datos);

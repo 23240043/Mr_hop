@@ -15,8 +15,6 @@ class CartaController extends Controller {
         $this->view('carta/index', $datos);
     }
 
-    // ============ CRUD ADMIN ============
-
     public function gestionar() {
         Auth::requireRole('administrador');
         $productoModel = new Producto();

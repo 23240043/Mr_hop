@@ -65,7 +65,6 @@ class AuthController extends Controller {
             ];
             $confirmar = $_POST['confirmar_password'] ?? '';
 
-            // Validaciones básicas
             $errores = [];
             if (empty($datos['nombre'])) $errores[] = 'El nombre es obligatorio.';
             if (empty($datos['email']) || !filter_var($datos['email'], FILTER_VALIDATE_EMAIL)) {
@@ -100,10 +99,6 @@ class AuthController extends Controller {
         Helper::redirect('index.php?controller=auth&action=login');
     }
 
-    /**
-     * Placeholder para recuperación de contraseña
-     * La lógica completa (envío de email + tokens) se implementará después
-     */
     public function recuperar() {
         $this->view('auth/recuperar', ['titulo' => 'Recuperar contraseña']);
     }
