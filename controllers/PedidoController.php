@@ -1,4 +1,6 @@
 <?php
+require_once ROOT_PATH . '/vendor/autoload.php';
+use Dompdf\Dompdf;
 require_once ROOT_PATH . '/controllers/Controller.php';
 require_once ROOT_PATH . '/models/Pedido.php';
 require_once ROOT_PATH . '/models/Producto.php';
@@ -161,5 +163,63 @@ class PedidoController extends Controller {
             Helper::setFlash('error', 'No se pudo eliminar el pedido.');
         }
         Helper::redirect('index.php?controller=pedido&action=listar');
+    }
+    public function reportePDF() {
+
+        Auth::requireRole(['administrador','mesero']);
+
+        $pedidoModel = new Pedido();
+        $pedidos = $pedidoModel->listarTodos();
+
+        $html = '
+        <h1 style="text-align:center;">Reporte de Pedidos - MR. HOP</h1>
+
+        <table width="100%" border="1" cellspacing="0" cellpadding="8">
+            <thead>
+                <tr style="background:#000; color:#fff;">
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+        ';
+
+        foreach ($pedidos as $p) {
+
+            $estado = Helper::estadoPedido($p['estado']);
+
+            $html .= '
+                <tr>
+                    <td>#' . $p['id'] . '</td>
+                    <td>' . $p['cliente_nombre'] . '</td>
+                    <td>' . ucfirst($p['tipo']) . '</td>
+                    <td>' . $p['fecha_pedido'] . '</td>
+                    <td>$' . number_format($p['total'], 2) . '</td>
+                    <td>' . $estado['texto'] . '</td>
+                </tr>
+            ';
+        }
+
+        $html .= '
+            </tbody>
+        </table>
+        ';
+
+        $dompdf = new Dompdf();
+
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'landscape');
+
+        $dompdf->render();
+
+        $dompdf->stream(
+            "reporte_pedidos.pdf",
+            ["Attachment" => false]
+        );
     }
 }

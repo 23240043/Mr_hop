@@ -1,8 +1,25 @@
 <div class="flex-between mb-3">
     <h2>Todos los Pedidos</h2>
-    <?php if (Auth::hasRole('administrador')): ?>
-        <a href="<?= Helper::url('admin', 'dashboard') ?>" class="btn btn-outline btn-sm">← Dashboard</a>
-    <?php endif; ?>
+
+    <div style="display:flex; gap:10px;">
+
+        <!-- BOTÓN PDF -->
+        <a href="<?= Helper::url('pedido', 'reportePDF') ?>"
+           class="btn btn-success btn-sm"
+           target="_blank">
+           📄 Reporte PDF
+        </a>
+
+        <!-- BOTÓN DASHBOARD -->
+        <?php if (Auth::hasRole('administrador')): ?>
+            <a href="<?= Helper::url('admin', 'dashboard') ?>"
+               class="btn btn-outline btn-sm">
+               ← Dashboard
+            </a>
+        <?php endif; ?>
+
+    </div>
+
 </div>
 
 <?php if (empty($pedidos)): ?>
